@@ -1,5 +1,6 @@
 package domain
 
+import akka.actor.Props
 import akka.persistence.SnapshotMetadata
 import domain.BaseAggregate.{GetState, KillAggregate}
 import domain.RealEstateAggregate._
@@ -7,19 +8,23 @@ import domain.RealEstateAggregate._
 object RealEstateAggregate{
   import BaseAggregate._
 
+  //State
   case class RealEstate(id:Long, published:Boolean) extends State
+
   // Commands
-  case class Publish(exposeId:Long) extends Command
-  case class Unpublish(exposeId:Long) extends Command
+  case class Publish() extends Command
+  case class Unpublish() extends Command
 
   //Events
   case class RealEstatePublished() extends Event
   case class RealEstateUnpublished() extends Event
+
+  def props(realEstateId: String): Props = Props(new RealEstateAggregate(realEstateId))
 }
 
-class RealEstateAggregate(realEstateId:Long) extends BaseAggregate{
+class RealEstateAggregate(realEstateId:String) extends BaseAggregate{
   override def persistenceId: String = realEstateId.toString
-  state = RealEstate(realEstateId, published = false)
+  state = RealEstate(realEstateId.toLong, published = false)
 
   override def updateState(evt: BaseAggregate.Event): Unit = evt match {
     case RealEstatePublished() =>
@@ -40,7 +45,7 @@ class RealEstateAggregate(realEstateId:Long) extends BaseAggregate{
   val unpublished: Receive = {
     case GetState =>
       respond()
-    case Publish =>
+    case Publish() =>
       persist(RealEstatePublished())(afterEventPersisted)
     case KillAggregate =>
       context.stop(self)
@@ -48,7 +53,7 @@ class RealEstateAggregate(realEstateId:Long) extends BaseAggregate{
   val published: Receive = {
     case GetState =>
       respond()
-    case Unpublish =>
+    case Unpublish() =>
       persist(RealEstateUnpublished())(afterEventPersisted)
 
     case KillAggregate =>
