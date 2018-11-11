@@ -1,0 +1,9 @@
+region: eu-central-1
+stacks:
+  test-dynamo-kcl:
+    template-url: kclDynamo.template.yml
+    timeout: 1200
+    parameters:
+      TableName: ppaSps
+      StreamName: myStream
+

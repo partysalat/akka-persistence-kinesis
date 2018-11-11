@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: KCL Dynamo
+Parameters:
+  TableName:
+    Description: Description of the CloudWatch alarm
+    Type: String
+  StreamName:
+    Description: Kinesis stream name
+    Type: String
+
+Resources:
+  kinesisStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: !Ref StreamName
+      RetentionPeriodHours: 24
+      ShardCount: 1
+  kclDynamodb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TableName
+      AttributeDefinitions:
+      - AttributeName: leaseKey
+        AttributeType: S
+      KeySchema:
+      - AttributeName: leaseKey
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
