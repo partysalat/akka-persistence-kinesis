@@ -7,6 +7,7 @@ import common.Acknowledge
 object BaseAggregate {
 
   trait State
+  case object Uninitialized extends State
 
   trait Event
 
@@ -51,6 +52,7 @@ trait BaseAggregate extends PersistentActor with ActorLogging {
    * @param evt Event that has been persisted
    */
   protected def afterEventPersisted(evt: Event): Unit = {
+    log.info("Event persistend!event {}", evt)
     eventsSinceLastSnapshot += 1
     if (eventsSinceLastSnapshot >= eventsPerSnapshot) {
       log.debug("{} events reached, saving snapshot", eventsPerSnapshot)

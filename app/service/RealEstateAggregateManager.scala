@@ -25,7 +25,7 @@ class RealEstateAggregateManager extends AggregateManager {
       processAggregateCommand(id, Publish())
     case UnpublishRealEstate(realEstateId) =>
       val id = realEstateId
-      processAggregateCommand(id, Publish())
+      processAggregateCommand(id, Unpublish())
     case GetRealEstate(realEstateId) =>
 //      val id = "user-" + name
       val id = realEstateId

@@ -4,11 +4,11 @@ import java.sql.Date
 
 import org.joda.time.DateTime
 import play.api.db.slick.HasDatabaseConfigProvider
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
 trait BaseTable{
   self: HasDatabaseConfigProvider[JdbcProfile] =>
-  import driver.api._
+  import profile.api._
 
   implicit def dateTime =
     MappedColumnType.base[DateTime, Date](
