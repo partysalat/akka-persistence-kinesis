@@ -12,7 +12,7 @@ import play.api.libs.json.{Json, Reads}
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
-case class KinesisMessageMeta(markProcessed: () => Unit)
+case class KinesisMessageMeta(markProcessed: () => Unit, sequenceNumber: String)
 
 abstract class KinesisConsumer[T: Reads] {
   val logger: Logger
@@ -41,7 +41,7 @@ abstract class KinesisConsumer[T: Reads] {
   }
 
   private def recordToTuple(record: KinesisRecord) = {
-    (KinesisMessageMeta(record.markProcessed), parseJson(record))
+    (KinesisMessageMeta(record.markProcessed, record.sequenceNumber), parseJson(record))
 
   }
 
@@ -52,6 +52,9 @@ abstract class KinesisConsumer[T: Reads] {
   if (config.enabled) {
     source
       .via(flow.withAttributes(supervisionStrategy(decider)))
-      .runWith(Sink.foreach[KinesisMessageMeta](_.markProcessed()))
+      .runWith(Sink.foreach[KinesisMessageMeta](messageMeta =>{
+        logger.info(s"ack message meta with sequence ${messageMeta.sequenceNumber}")
+        messageMeta.markProcessed()
+      }))
   }
 }
