@@ -18,6 +18,8 @@ libraryDependencies ++= Seq(
   "com.markatta" %% "akron" % "1.2",
   "com.typesafe.play" %% "play-slick" % "3.0.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
+  "com.typesafe.akka" %% "akka-persistence" % "2.5.18",
+  "com.typesafe.akka" %% "akka-persistence-dynamodb" % "1.1.1",
   "com.streetcontxt" %% "kcl-akka-stream" % "2.0.3" excludeAll (
     ExclusionRule(organization = "com.fasterxml.jackson.core", name = "jackson-core"),
     ExclusionRule(organization = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-cbor")

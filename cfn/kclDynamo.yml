@@ -4,6 +4,8 @@ stacks:
     template-url: kclDynamo.template.yml
     timeout: 1200
     parameters:
-      TableName: ppaSps
+      KinesisJournalTableName: ppaSps
+      EventJournalDBName: eventJournal
+      SnapshotDBName: snapshots
       StreamName: myStream
 

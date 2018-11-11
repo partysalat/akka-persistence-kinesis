@@ -1,7 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: KCL Dynamo
 Parameters:
-  TableName:
+  KinesisJournalTableName:
+    Description: Description of the CloudWatch alarm
+    Type: String
+  EventJournalDBName:
+    Description: Description of the CloudWatch alarm
+    Type: String
+  SnapshotDBName:
     Description: Description of the CloudWatch alarm
     Type: String
   StreamName:
@@ -18,13 +24,60 @@ Resources:
   kclDynamodb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref TableName
+      TableName: !Ref KinesisJournalTableName
       AttributeDefinitions:
       - AttributeName: leaseKey
         AttributeType: S
       KeySchema:
       - AttributeName: leaseKey
         KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+  eventJournalDB:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref EventJournalDBName
+      AttributeDefinitions:
+      - AttributeName: par
+        AttributeType: S
+      - AttributeName: num
+        AttributeType: N
+      KeySchema:
+      - AttributeName: par
+        KeyType: HASH
+      - AttributeName: num
+        KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+  snaphshotDB:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref SnapshotDBName
+      AttributeDefinitions:
+      - AttributeName: par
+        AttributeType: S
+      - AttributeName: seq
+        AttributeType: N
+      - AttributeName: ts
+        AttributeType: N
+      KeySchema:
+      - AttributeName: par
+        KeyType: HASH
+      - AttributeName: seq
+        KeyType: RANGE
+
+      LocalSecondaryIndexes:
+        - IndexName: ts-idx
+          Projection:
+            ProjectionType: ALL
+          KeySchema:
+          - AttributeName: par
+            KeyType: HASH
+          - AttributeName: ts
+            KeyType: RANGE
+
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
