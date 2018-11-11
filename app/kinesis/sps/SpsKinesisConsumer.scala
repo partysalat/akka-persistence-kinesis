@@ -33,23 +33,27 @@ class SpsKinesisConsumer @Inject()(
     .map(validate)
       .mapAsync(1)(handleMessage)
 
-  def handleMessage(msg:(KinesisMessageMeta, EntitlementCommand))= {
+  def handleMessage(msg:(KinesisMessageMeta, Option[EntitlementCommand]))= {
     logger.info(msg._2.toString)
-    val entitlementCommand = msg._2
+    if(msg._2.isEmpty){
+      Future.successful(msg._1)
+    }else{
+      val entitlementCommand = msg._2.get
 
-    if (entitlementCommand.publish) {
-      realEstateAggregateManager ! PublishRealEstate(entitlementCommand.id)
-    } else {
-      realEstateAggregateManager ! UnpublishRealEstate(entitlementCommand.id)
+      if (entitlementCommand.publish) {
+        realEstateAggregateManager ! PublishRealEstate(entitlementCommand.id)
+      } else {
+        realEstateAggregateManager ! UnpublishRealEstate(entitlementCommand.id)
+      }
+
+      Future.successful(msg._1)
     }
-
-    Future.successful(msg._1)
   }
   def validate(msg:(KinesisMessageMeta, Option[EntitlementCommand]))= {
     if(msg._2.isEmpty){
       logger.error("Handle error case")
     }
-    (msg._1, msg._2.get)
+    (msg._1, msg._2)
   }
 
 }
