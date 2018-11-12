@@ -1,3 +1,4 @@
+
 name := "kinesis-cqrs-test"
 
 version := "1.0-SNAPSHOT"
@@ -9,6 +10,13 @@ PlayKeys.devSettings := Seq("play.server.http.port" -> "9000")
 
 scalaVersion := "2.11.8"
 
+
+PB.targets in Compile := Seq(
+  scalapb.gen() -> (sourceManaged in Compile).value
+)
+PB.protoSources in Compile := Seq(
+  file("app/protobuf")
+)
 libraryDependencies ++= Seq(
   ehcache,
   guice,
@@ -26,7 +34,8 @@ libraryDependencies ++= Seq(
     ExclusionRule(organization = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-cbor")
     ),
   "com.fasterxml.jackson.core" % "jackson-core" % "2.9.7",
-  "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % "2.9.7"
+  "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % "2.9.7",
+  "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf"
 
 )
 
@@ -36,5 +45,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-testkit" % "2.4.17",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0"
 ).map(_ % Test)
+
 
 resolvers in ThisBuild += Resolver.bintrayRepo("streetcontxt", "maven")

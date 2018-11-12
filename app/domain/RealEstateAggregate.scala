@@ -4,7 +4,7 @@ import akka.actor.Props
 import akka.persistence.SnapshotMetadata
 import domain.BaseAggregate.{GetState, KillAggregate}
 import domain.RealEstateAggregate._
-import play.api.libs.json.{Format, Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
 object RealEstateAggregate{
   import BaseAggregate._
@@ -14,12 +14,12 @@ object RealEstateAggregate{
   implicit val realEstateFormat: Format[RealEstate] = Json.format[RealEstate]
 
   // Commands
-  case class Publish() extends Command
-  case class Unpublish() extends Command
+//  case class Publish() extends Command
+//  case class Unpublish() extends Command
 
   //Events
-  case class RealEstatePublished() extends Event
-  case class RealEstateUnpublished() extends Event
+//  case class RealEstatePublished() extends Event
+//  case class RealEstateUnpublished() extends Event
 
   def props(realEstateId: String): Props = Props(new RealEstateAggregate(realEstateId))
 }
@@ -29,10 +29,10 @@ class RealEstateAggregate(realEstateId:String) extends BaseAggregate{
   state = RealEstate(realEstateId.toLong, published = false)
 
   override def updateState(evt: BaseAggregate.Event): Unit = evt match {
-    case RealEstatePublished() =>
+    case _:RealEstatePublished =>
       context.become(published)
       setStateToPublished(true)
-    case RealEstateUnpublished() =>
+    case _:RealEstateUnpublished =>
       context.become(unpublished)
       setStateToPublished(false)
   }

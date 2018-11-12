@@ -1,12 +1,13 @@
 package service
 
 import akka.actor._
-import domain.RealEstateAggregate
+import domain.{Publish, RealEstateAggregate, Unpublish}
 
 object RealEstateAggregateManager{
 
   import AggregateManager._
 
+  // Commands
   case class PublishRealEstate(realEstateId: String) extends Command
   case class UnpublishRealEstate(realEstateId: String) extends Command
   case class GetRealEstate(realEstateId: String) extends Command
