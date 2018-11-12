@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+import "google/protobuf/timestamp.proto";
+
+package domain;
+
+option (scalapb.options) = {
+    single_file: true
+    flat_package: true
+};
+
+// Commands
+message Publish {
+    option (scalapb.message).extends = "domain.BaseAggregate.Command";
+}
+message Unpublish {
+    option (scalapb.message).extends = "domain.BaseAggregate.Command";
+}
+
+
+// Events
+message RealEstatePublished {
+    option (scalapb.message).extends = "domain.BaseAggregate.Event";
+    google.protobuf.Timestamp timestamp = 1;
+}
+
+message RealEstateUnpublished {
+    option (scalapb.message).extends = "domain.BaseAggregate.Event";
+    google.protobuf.Timestamp timestamp = 1;
+}
