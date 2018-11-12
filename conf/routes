@@ -1,3 +1,4 @@
 # user
-GET           /                              common.HomeController.index
-GET           /assets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
+GET        /                                common.HomeController.index
+GET        /real-estate/:realEstatId        common.HomeController.getRealEstate(realEstatId:String)
+GET        /assets/*file                    controllers.Assets.versioned(path="/public", file: Asset)

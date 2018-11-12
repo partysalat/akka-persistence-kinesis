@@ -4,12 +4,14 @@ import akka.actor.Props
 import akka.persistence.SnapshotMetadata
 import domain.BaseAggregate.{GetState, KillAggregate}
 import domain.RealEstateAggregate._
+import play.api.libs.json.{Format, Json, OFormat}
 
 object RealEstateAggregate{
   import BaseAggregate._
 
   //State
   case class RealEstate(id:Long, published:Boolean) extends State
+  implicit val realEstateFormat: Format[RealEstate] = Json.format[RealEstate]
 
   // Commands
   case class Publish() extends Command

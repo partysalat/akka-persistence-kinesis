@@ -37,6 +37,7 @@ abstract class KinesisConsumer[T: Reads] {
         .withSupervisionStrategy(decider))
 
   private def parseJson(record: KinesisRecord) = {
+    logger.info(s"parse json ${record.data.utf8String}")
     Json.fromJson[T](Json.parse(record.data.utf8String)).asOpt
   }
 

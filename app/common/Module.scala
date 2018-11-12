@@ -7,7 +7,7 @@ import play.api.libs.concurrent.AkkaGuiceSupport
 import service.RealEstateAggregateManager
 
 object Module{
-  val REALESTATE_AGGREGATE_MANAGER = "realestateAggregateManager"
+  final val REALESTATE_AGGREGATE_MANAGER = "realestateAggregateManager"
 }
 class Module extends AbstractModule with AkkaGuiceSupport {
 
